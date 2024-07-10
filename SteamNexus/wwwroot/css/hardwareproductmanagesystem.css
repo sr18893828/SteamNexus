@@ -1,0 +1,215 @@
+﻿/* datatables 頂部布局調整 */
+#HardwareManageTable_wrapper .dt-end .dt-search {
+    text-align: center !important;
+}
+
+#HardwareManageTable_wrapper .dt-middle {
+    text-align: end !important;
+}
+
+/* 編輯按鈕 */
+html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Edit-btn {
+    background-color: #007FFF;
+}
+
+    html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Edit-btn svg {
+        color: white;
+    }
+
+    html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Edit-btn:hover {
+        background-color: white;
+    }
+
+        html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Edit-btn:hover svg {
+            color: #007FFF;
+        }
+
+html[data-bs-theme="light"] #HardwareManageTable_wrapper .Edit-btn {
+    background-color: white;
+}
+
+    html[data-bs-theme="light"] #HardwareManageTable_wrapper .Edit-btn svg {
+        color: #007FFF;
+    }
+
+    html[data-bs-theme="light"] #HardwareManageTable_wrapper .Edit-btn:hover {
+        background-color: #007FFF;
+    }
+
+        html[data-bs-theme="light"] #HardwareManageTable_wrapper .Edit-btn:hover svg {
+            color: white;
+        }
+
+/* 確認按鈕 */
+html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Enter-btn {
+    background-color: #00FF00;
+}
+
+    html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Enter-btn svg {
+        color: white;
+    }
+
+    html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Enter-btn:hover {
+        background-color: white;
+    }
+
+        html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Enter-btn:hover svg {
+            color: #00FF00;
+        }
+
+html[data-bs-theme="light"] #HardwareManageTable_wrapper .Enter-btn {
+    background-color: white;
+}
+
+    html[data-bs-theme="light"] #HardwareManageTable_wrapper .Enter-btn svg {
+        color: #00FF00;
+    }
+
+    html[data-bs-theme="light"] #HardwareManageTable_wrapper .Enter-btn:hover {
+        background-color: #00FF00;
+    }
+
+        html[data-bs-theme="light"] #HardwareManageTable_wrapper .Enter-btn:hover svg {
+            color: white;
+        }
+
+/* 還原按鈕 */
+html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Cancell-btn {
+    background-color: #FF0000;
+}
+
+    html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Cancell-btn svg {
+        color: white;
+    }
+
+    html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Cancell-btn:hover {
+        background-color: white;
+    }
+
+        html[data-bs-theme="dark"] #HardwareManageTable_wrapper .Cancell-btn:hover svg {
+            color: #FF0000;
+        }
+
+html[data-bs-theme="light"] #HardwareManageTable_wrapper .Cancell-btn {
+    background-color: white;
+}
+
+    html[data-bs-theme="light"] #HardwareManageTable_wrapper .Cancell-btn svg {
+        color: #FF0000;
+    }
+
+    html[data-bs-theme="light"] #HardwareManageTable_wrapper .Cancell-btn:hover {
+        background-color: #FF0000;
+    }
+
+        html[data-bs-theme="light"] #HardwareManageTable_wrapper .Cancell-btn:hover svg {
+            color: white;
+        }
+
+/* 推薦設定 文字顏色 */
+#HardwareManageTable_wrapper .green-row {
+    color: green !important;
+}
+
+#HardwareManageTable_wrapper .blue-row {
+    color: blue !important;
+}
+
+#HardwareManageTable_wrapper .red-row {
+    color: red !important;
+}
+
+/* 吐司預設樣式 */
+html[data-bs-theme="dark"]  .defaultToast {
+    height: 47px;
+    width: 250px;
+    background-color: black !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+html[data-bs-theme="light"] .defaultToast {
+    height: 47px;
+    width: 250px;
+    background-color: white !important;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.ToastIcon-success {
+    background-color: #00FF00;
+    height: 1.2rem;
+    width: 1.2rem;
+    border-radius: 50%;
+}
+
+html[data-bs-theme="dark"] .ToastIcon-success svg {
+    color: black;
+    width: 1rem;
+    height: 1rem;
+}
+
+html[data-bs-theme="light"] .ToastIcon-success svg {
+    color: white;
+    width: 1rem;
+    height: 1rem;
+}
+
+.ToastIcon-fail {
+    background-color: #FF0000;
+    height: 1.2rem;
+    width: 1.2rem;
+    border-radius: 50%;
+}
+
+html[data-bs-theme="dark"] .ToastIcon-fail svg {
+    color: black;
+    width: 1rem;
+    height: 1rem;
+}
+
+html[data-bs-theme="light"] .ToastIcon-fail svg {
+    color: white;
+    width: 1rem;
+    height: 1rem;
+}
+
+/* 表格的佈局採用固定佈局算法 */
+body {
+    table-layout: fixed;
+}
+
+/* 欄位預設樣式 */
+html[data-bs-theme="dark"] #HardwareManageTable_wrapper .defaultcellType {
+    border: none; /* 取消邊框 */
+    background-color: transparent; /* 背景透明 */
+    appearance: none; /* 去除默認樣式 */
+    color: #c2c2d9; /* 文字顏色 */
+}
+
+html[data-bs-theme="light"] #HardwareManageTable_wrapper .defaultcellType {
+    border: none; /* 取消邊框 */
+    background-color: transparent; /* 背景透明 */
+    appearance: none; /* 去除默認樣式 */
+    color: #607080; /* 文字顏色 */
+}
+
+/*@media (max-width: 768px) {
+    .top-md-0 {
+        top: 0% !important;
+    }
+
+    .translate-middle-md-x {
+        transform: translate(-50%) !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .start-md-0 {
+        left: 0% !important;
+    }
+
+    .translate-md-cancel {
+        transform: translate(0%) !important;
+    }
+}*/
+
+

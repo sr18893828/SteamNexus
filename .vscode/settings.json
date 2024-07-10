@@ -1,0 +1,15 @@
+{
+  "cSpell.words": [
+    "autohide",
+    "coreui",
+    "datatables",
+    "fixedheader",
+    "pinia",
+    "toastify",
+    "VITE",
+    "xmark"
+  ],
+  "terminal.integrated.env.linux": {
+    "EDITOR": "code"
+  }
+}

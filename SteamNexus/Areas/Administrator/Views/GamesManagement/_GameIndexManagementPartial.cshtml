@@ -1,0 +1,481 @@
+﻿@* PartialView 的內容 *@
+<style>
+    .label_newClass::after{
+        background-color:rgba(0,0,0,0) !important;
+        margin-bottom:5px;
+    }
+
+    .form-control {
+        padding-bottom: 0.1rem !important;
+        width: -webkit-fill-available !important;
+    }
+
+    .swal2-html-container {
+        overflow: hidden !important;
+    }
+</style>
+<div>
+    <h1>全部遊戲<img src="~/img/loading-block-white.gif" style="margin:20px;width:30px;height:30px;display:none" id="GameIndexLoading" /></h1>
+    
+    <table id="GameManageTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>代碼</th>
+                <th>名稱</th>
+                <th>原始價格</th>
+                <th>現在價格</th>
+                <th>遊戲分級</th>
+                <th>評價</th>
+                <th>評價數量</th>
+                <th>發行商</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#GameIndexLoading").show();
+        let baseAddress = "https://localhost:7097";
+        var dataTable = new DataTable('#GameManageTable', {
+            columns: [
+                {
+                    "data": "imagePath",
+                    "width": "5%",
+                    "className": "text-center",
+                    "render": function (data, type, row) {
+                        return '<img src="' + data + '" alt="圖片" style="width:150px">';
+                    }, responsivePriority: 1
+                },
+                { "data": "appId", "width": "5%"},
+                { "data": "name", responsivePriority: 1, "width": "5%" },
+                { "data": "originalPrice", "width": "2%" },
+                { "data": "currentPrice", responsivePriority: 2, "width": "2%" },
+                { "data": "ageRating", "width": "5%" },
+                { "data": "comment", "width": "5%" },
+                { "data": "commentNum", "width": "5%" },
+                { "data": "publisher", "width": "5%" },
+                {
+                    "data": null,
+                    "orderable": false,
+                    "width": "5%",
+                    "className": "text-center",
+                    // 按鈕 自定義
+                    render: function (data, type, row, meta) {
+                        // 取得 productId
+                        let name = row.name;
+                        let GameId = row.gameId;
+                        // 編輯按鈕
+                        let editEle = '<button data-GameId="' + GameId + '"  data-name="' + name + '" id="edit_button" data-bs-toggle="popover" data-bs-content="nothing"><i class="fa-solid fa-pen-to-square"></i></button>';
+                        // 刪除按鈕
+                        let deleteEle = '<button data-GameId="' + GameId + '"  data-name="' + name + '" id="delete_button" data-bs-toggle="popover" data-bs-content="nothing"><i class="fa-solid fa-trash"></i></button>';
+                        if (type === 'display') {
+                            return `${editEle}${deleteEle}`;
+                        }
+                        return data;
+                    }, responsivePriority: 1
+                }
+            ],
+            // 標頭固定
+            fixedHeader: true,
+            // 響應式設計
+            responsive: true,
+            language: {url: '//cdn.datatables.net/plug-ins/2.0.3/i18n/zh-HANT.json'},
+            // 自動寬度 關閉
+            autoWidth: true,
+            // 資料載入中 gif
+            processing: true,
+            //Create按鈕建立
+            layout: {
+                topMiddle: {
+                    buttons: [
+                        {
+                            text: '新增遊戲',
+                            // 按鈕點擊事件
+                            action: function (e, dt, node, config) {
+                                
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                $.getScript("/js/GameEdit.js")
+                                    .done(function (script, textStatus) {
+                                        console.log("加载成功");
+                                        fetch(`@Url.Action("GetCreatPartialView", "GamesManagement", new { area = "Administrator" })`, {
+                                            method: "GET"
+                                        }).then(response => {
+                                            // 確保請求是否成功
+                                            if (!response.ok) {
+                                                throw new Error('Network response was not ok');
+                                            }
+                                            // 解析 html
+                                            return response.text();
+                                        }).then(val => {
+                                            if (val) {
+                                                showSwal(val, `@Url.Action("PostCreatPartialToDB", "GamesManagement", new { area = "Administrator" })`);
+                                            }
+
+                                        }).catch(error => {
+                                            alert(error);
+                                        }).finally(() => {
+                                            // 异步操作完成后启用按钮
+                                            $(this).prop('disabled', false);
+                                        });
+                                    })
+                                    //圖片更新抓不到
+                                    .fail(function (jqxhr, settings, exception) {
+                                        console.error("加载失败");
+                                        fetch(`@Url.Action("GetCreatPartialView", "GamesManagement", new { area = "Administrator" })`, {
+                                            method: "GET"
+                                        }).then(response => {
+                                            // 確保請求是否成功
+                                            if (!response.ok) {
+                                                throw new Error('Network response was not ok');
+                                            }
+                                            // 解析 html
+                                            return response.text();
+                                        }).then(val => {
+                                            if (val) {
+                                                showSwal(val, `@Url.Action("PostCreatPartialToDB", "GamesManagement", new { area = "Administrator" })`);
+                                            }
+
+                                        }).catch(error => {
+                                            alert(error);
+                                        }).finally(() => {
+                                            // 异步操作完成后启用按钮
+                                            $(this).prop('disabled', false);
+                                        });
+                                    });
+                            }
+                        },
+                        {
+                            text: '更新全部價格',
+                            // 按鈕點擊事件
+                            action: function (e, dt, node, config) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                fetch(`@Url.Action("GetGamePriceDataToDB", "GamesManagement", new { area = "Administrator" })`, {
+                                    method: "GET"
+                                }).then(result => {
+                                    // 此時 result 是一個請求結果的物件
+                                    // 注意傳回值型態，字串用 text()，JSON 用 json()
+                                    if (result.ok) {
+                                        return result.text();
+                                    }
+                                }).then(data => {
+                                    console.log(data);
+                                }).catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                        },
+                        {
+                            text: '更新目前在線人數',
+                            // 按鈕點擊事件
+                            action: function (e, dt, node, config) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                fetch(`@Url.Action("GetOnlineUsersDataToDB", "GamesManagement", new { area = "Administrator" })`, {
+                                    method: "GET"
+                                }).then(result => {
+                                    // 此時 result 是一個請求結果的物件
+                                    // 注意傳回值型態，字串用 text()，JSON 用 json()
+                                    if (result.ok) {
+                                        return result.text();
+                                    }
+                                }).then(data => {
+                                    console.log(data);
+                                }).catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                        },
+                        {
+                            text: '更新目前所有評論',
+                            // 按鈕點擊事件
+                            action: function (e, dt, node, config) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                fetch(`@Url.Action("GetNumberOfCommentsDataToDB", "GamesManagement", new { area = "Administrator" })`, {
+                                    method: "GET"
+                                }).then(result => {
+                                    // 此時 result 是一個請求結果的物件
+                                    // 注意傳回值型態，字串用 text()，JSON 用 json()
+                                    if (result.ok) {
+                                        return result.text();
+                                    }
+                                }).then(data => {
+                                    console.log(data);
+                                }).catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                        },
+                        {
+                            text: '抓取最低配備',
+                            // 按鈕點擊事件
+                            action: function (e, dt, node, config) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                fetch(`@Url.Action("GetDataToDB", "GamesManagement", new { area = "Administrator" })?isMinimumRequirement=true`, {
+                                    method: "GET"
+                                }).then(result => {
+                                    // 此時 result 是一個請求結果的物件
+                                    // 注意傳回值型態，字串用 text()，JSON 用 json()
+                                    if (result.ok) {
+                                        return result.text();
+                                    }
+                                }).then(data => {
+                                    console.log(data);
+                                }).catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                        },
+                        {
+                            text: '抓取最高配備',
+                            // 按鈕點擊事件
+                            action: function (e, dt, node, config) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                fetch(`@Url.Action("GetDataToDB", "GamesManagement", new { area = "Administrator" })?isMinimumRequirement=false`, {
+                                    method: "GET"
+                                }).then(result => {
+                                    // 此時 result 是一個請求結果的物件
+                                    // 注意傳回值型態，字串用 text()，JSON 用 json()
+                                    if (result.ok) {
+                                        return result.text();
+                                    }
+                                }).then(data => {
+                                    console.log(data);
+                                }).catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                        }
+
+                    ]
+                },
+            },
+        });
+
+        //拿取datatable的資料
+        function getdatatableData() {
+            // 發送非同步GET請求
+            fetch(`@Url.Action("IndexJson", "GamesManagement", new { area = "Administrator" })`, {
+                method: "GET"
+            }).then(result => {
+                // 此時 result 是一個請求結果的物件
+                // 注意傳回值型態，字串用 text()，JSON 用 json()
+                if (result.ok) {
+                    return result.json();
+                }
+            }).then(data => {
+                // 添加新的資料
+                if (data && data.length > 0) {
+                    dataTable.rows.add(data).draw();
+                }
+                $("#GameIndexLoading").hide();
+                
+            }).catch(error => {
+                console.log(error);
+            });
+        };
+        getdatatableData();
+
+        //編輯:叫出編輯的MVC 畫面
+        $(document).on('click', 'button[id$="edit_button"]', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var val = ""
+            const gameGameId = $(this).attr('data-GameId');
+
+            //優先載入js 在執行fetch
+            $.getScript("/js/GameEdit.js")
+                .done(function (script, textStatus) {
+                    console.log("加载成功");
+                    // 执行加载的脚本
+                    //ajex呼叫EditPartialView
+                    fetch(`@Url.Action("GetEditPartialView", "GamesManagement", new { area = "Administrator" })?id=${gameGameId}`, {
+                        method: "GET"
+                    }).then(response => {
+                        // 確保請求是否成功
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        // 解析 html
+                        return response.text();
+                    }).then(val => {
+                        if (val) {
+                            showSwal(val, `@Url.Action("PostEditPartialToDB", "GamesManagement", new { area = "Administrator" })`);
+                        }
+                    }).catch(error => {
+                        alert(error);
+                    }).finally(() => {
+                        // 异步操作完成后启用按钮
+                        $(this).prop('disabled', false);
+                    });
+                })
+                .fail(function (jqxhr, settings, exception) {
+                    console.error("加载失败");
+                });
+        })
+
+        //將前端內容傳至後端(新增.編輯)
+        async function showSwal(val,urlValue) {
+            const { value: formValues } = await Swal.fire({
+                html: `${val}`,
+                focusConfirm: false, //設定初始聚焦為第一個input元素 而不是"確認"按鈕
+                confirmButtonText: "確認", //按鈕文字
+                preConfirm: () => {   //在按下確認後所發生的事情
+                    event.preventDefault();
+                    var num = $("#PostEditPartialToDB").prop("name") //我把GameId藏在這裡
+                    var token = $('input[name="__Antiforgery__SteamNexus"]').val(); //擷取防偽標籤的值
+                    var action = ""
+                    if (urlValue.includes("PostCreatPartialToDB")) {
+                        action = "新增"
+                    }else{
+                        action = "編輯"
+                    }
+                    $("#systemLoading").show();
+                    console.log(urlValue)
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            GameId: num,
+                            AppId: $("#AppId").val(),
+                            Name: $("#Name").val(),
+                            OriginalPrice: $("#OriginalPrice").val(),
+                            AgeRating: $("#AgeRating").val(),
+                            ReleaseDate: $("#ReleaseDate").val(),
+                            Publisher: $("#Publisher").val(),
+                            Description: $("#Description").val(),
+                            ImagePath: $("#ImagePath").val(),
+                            VideoPath: $("#VideoPath").val(),
+                            __Antiforgery__SteamNexus: token  //防偽標籤傳送點
+                        },
+                        url: urlValue
+                    }).done(data => {
+                        //若資料驗證有錯server會回傳editview 若正確他會回傳indexview 用if來辨識他是否為indexview
+                        if (data.includes("<h1>全部遊戲")) {
+                            console.log("已完成");
+                            $("#System").html(data);
+                            if (action == "新增") {
+                                Swal.fire({
+                                    title: "新增成功",
+                                    icon: "success",
+                                    confirmButtonText: "確認",
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "編輯成功",
+                                    icon: "success",
+                                    confirmButtonText: "確認",
+                                });
+                            }
+                            
+                        } else {
+                            console.log("內容有錯");
+                            showSwal(data, urlValue);
+                        }
+                    })
+                        .fail(data => {
+                            console.log("失敗");
+                            $("#systemLoading").hide();
+                            $("#System").html(data);
+                        });
+                }
+            });
+            // if (formValues) {
+            //     Swal.fire(JSON.stringify(formValues));
+            // }
+        }
+
+        // 刪除:綁定所有 button 標籤 id 為 delete_button 結尾的元素
+        $(document).on('click', 'button[id$="delete_button"]', function (event) {
+            //抓取delete_button自訂屬性的值
+            const gameName = $(this).attr('data-name');
+            const gameGameId = $(this).attr('data-GameId');
+
+            event.stopPropagation();
+            //sweetalert設定
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+            swalWithBootstrapButtons.fire({
+                title: `你確定要刪除${gameName}?`,
+                text: "您將無法恢復此狀態！",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "是的，我要刪除！",
+                cancelButtonText: "不，我再考慮一下",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        data: {
+                            id: Number(gameGameId)
+                        },
+                        url: `@Url.Action("PostDeletePartialToDB", "GamesManagement", new { area = "Administrator" })`
+                    }).done(data => {
+                        $("#systemLoading").hide();
+                        $("#System").html(data);
+                    }).fail(data => {
+                        $("#systemLoading").hide();
+                        $("#System").html(data);
+                    });
+
+                    swalWithBootstrapButtons.fire({
+                        title: `已刪除${gameName}`,
+                        text: "此操作無法復原",
+                        icon: "success"
+                    });
+
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: `未刪除${gameName}`,
+                        // text: "遊戲未刪除 :)",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+
+        //編輯:叫出編輯的MVC 畫面
+        $(document).on('click', 'button[id$="update_button"]', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var val = ""
+            const gameGameId = $(this).attr('data-GameId');
+
+            fetch(`@Url.Action("GetEditPartialView", "GamesManagement", new { area = "Administrator" })?id=${gameGameId}`, {
+                method: "GET"
+            }).then(response => {
+                // 確保請求是否成功
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // 解析 html
+                return response.text();
+            }).then(val => {
+                if (val) {
+                    showSwal(val, `@Url.Action("PostEditPartialToDB", "GamesManagement", new { area = "Administrator" })`);
+                }
+            }).catch(error => {
+                alert(error);
+            }).finally(() => {
+                // 异步操作完成后启用按钮
+                $(this).prop('disabled', false);
+            });
+        })
+    });
+</script>
